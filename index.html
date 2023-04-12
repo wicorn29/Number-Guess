@@ -1,0 +1,151 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<title>Wil's Guessing Game</title>
+	<script>
+		// Check if the user is on a mobile device
+if (/Mobi/.test(navigator.userAgent)) {
+  // Check if the device is currently in portrait mode
+  if (window.matchMedia("(orientation: portrait)").matches) {
+    // Prompt the user to switch to landscape mode
+    alert("Please switch to landscape mode for the best experience.");
+  }
+}
+
+	</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="https://letsgo2daswamp.w3spaces.com/CSS/guessthenumber.css" />
+</head>
+<body>
+	<header>
+		<h1>Guessing Game by Wil :)</h1>
+	</header>
+    
+    
+	<main>
+<p>Please guess a number between 1 and 10. You have 5 guesses:</p>
+<button id="hint">Hint</button>
+<select id="guess">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+  <option value="10">10</option>
+</select>
+
+		<button id="submit">Submit</button>
+        <button id="refresh" style="display:none;" title="Start a new game">New Game</button>
+
+		<p id="message"></p>
+        <p id="guesses-left"></p>
+	</main>
+	
+	<footer>
+		<p>I created this to test my skill level with HTML, CSS, and Javascript. I hope you enjoy my guessing game!</p>
+	</footer>
+	
+
+<script>
+let randomNumber = Math.floor(Math.random() * 10) + 1;
+let guessInput = document.getElementById("guess");
+const submitButton = document.getElementById("submit");
+const refreshButton = document.getElementById("refresh");
+const hintButton = document.getElementById("hint");
+let numGuesses = 0;
+let hintsRemaining = 3;
+
+function resetGame() {
+  // Reset the message and input field
+  message.textContent = "";
+  guessInput.value = "1";
+  numGuesses = 0;
+  hintsRemaining = 3;
+
+  // Generate a new random number
+  randomNumber = Math.floor(Math.random() * 10) + 1;
+
+  // Add back the submit button if it was removed
+  submitButton.style.visibility = "visible";
+  
+  // Hide the reset button and hint button
+  refreshButton.style.display = "none";
+  hintButton.style.display = "inline";
+  hintButton.disabled = false; // turn on hints
+}
+
+function provideHint() {
+  if (hintsRemaining > 0) {
+    hintsRemaining--;
+    hintButton.textContent = "Hint (" + hintsRemaining + ")";
+    
+    let hintMessage = "";
+    if (randomNumber % 3 === 0) {
+      hintMessage = "This number is a multiple of 3";
+    } else if (randomNumber % 2 === 0) {
+      hintMessage = "This number is even";
+    } else {
+      hintMessage = "This number is odd";
+    }
+
+    message.style.color = "orange";
+    message.textContent = hintMessage;
+    
+    if (hintsRemaining === 0) {
+      hintButton.style.display = "none";
+      hintButton.disabled = true; // disable the button when all hints have been used
+    }
+  }
+}
+
+
+let message = document.getElementById("message");
+
+submitButton.addEventListener("click", () => {
+  numGuesses++;
+
+  const guess = parseInt(guessInput.value);
+  
+  if (isNaN(guess) || guess < 1 || guess > 10) {
+    message.textContent = "Please enter a valid number between 1 and 10.";
+  } else if (guess === randomNumber) {
+    message.style.color = "green";
+    message.textContent = 'Congratulations, you guessed the number! Click "New Game" to start a new game! ';
+    submitButton.style.visibility = "hidden";
+    refreshButton.style.display = "inline";
+    hintButton.style.display = "none";
+  } else if (guess < randomNumber) {
+    message.style.color = "red";
+    message.textContent = "Too low, try again!";
+  } else if (guess > randomNumber) {
+    message.style.color = "red";
+    message.textContent = "Too high, try again!";
+  }
+
+  if (numGuesses === 5) {
+    submitButton.disabled = true;
+    message.style.color = "red";
+    message.textContent = "Sorry, you've run out of guesses. Click 'New Game' to play again.";
+    submitButton.style.visibility = "hidden";
+    refreshButton.style.display = "inline";
+    hintButton.style.display = "none";
+  }
+});
+
+refreshButton.addEventListener("click", () => {
+  resetGame();
+});
+
+hintButton.addEventListener("click", () => {
+  provideHint();
+});
+
+
+</script>
+</body>
+</html>
